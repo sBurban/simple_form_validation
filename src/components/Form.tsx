@@ -1,0 +1,553 @@
+
+import { useState } from "react";
+import './Form.css';
+import { Gender, StudentSkills } from "../common/Types";
+import { Validations } from '../utils/Validations';
+
+const options = [
+    {
+      value: '',
+      label: '-- Select Country--',
+    },
+    {
+      value: 'Finland',
+      label: 'Finland',
+    },
+    {
+      value: 'Sweden',
+      label: 'Sweden',
+    },
+    {
+      value: 'Norway',
+      label: 'Norway',
+    },
+    {
+      value: 'Denmark',
+      label: 'Denmark',
+    },
+];
+
+// interface FormErrorState  {
+//     firstName: null|string,
+//     lastName: null|string,
+//     email: null|string,
+//     country: null|string,
+//     telephone: null|string,
+//     dateOfBirth: null|string,
+//     favoriteColor: null|string,
+//     weight: null|string,
+//     gender: null|string,
+//     file: null|string,
+//     bio: null|string,
+//     skills: null|string
+// }
+type FormErrorState = Record<keyof FormState, (null|string)>;
+
+interface FormState  {
+    firstName: string,
+    lastName: string,
+    email: string,
+    country: string,
+    telephone: string,
+    dateOfBirth: string,
+    favoriteColor: string,
+    weight: number|string,
+    gender: Gender,
+    file: File|null,
+    bio: string,
+    skills: StudentSkills,
+    // touched: {
+    //     firstName: boolean,
+    //     lastName: boolean
+    // }
+}
+
+const initValues:FormState = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    country: '',
+    telephone: '',
+    dateOfBirth: '',
+    favoriteColor: '',
+    weight: 0,
+    gender: Gender.Female,
+    file: null,
+    bio: '',
+    skills: {
+        html: false,
+        css: false,
+        javascript: false,
+    },
+    // touched: {
+    //     firstName: false,
+    //     lastName: false,
+    // }
+};
+
+const initErrors:FormErrorState = {
+    firstName: null,
+    lastName: null,
+    email: null,
+    country: null,
+    telephone: null,
+    dateOfBirth: null,
+    favoriteColor: null,
+    weight: null,
+    gender: null,
+    file: null,
+    bio: null,
+    skills: null,
+}
+
+const skillsArrayFormat = (SkillsObj:StudentSkills) => {
+    // const tempSkills = {...SkillsObj};
+    // const formattedSkills = [];
+    // for (const key in tempSkills) {
+    //     console.log(key);
+    //     if (tempSkills[key as keyof StudentSkills]) {
+    //         formattedSkills.push(key.toUpperCase())
+    //     }
+    // }
+
+    const formattedSkills = Object.entries(SkillsObj).map(([key,value]) =>
+        value? key.toUpperCase() : null
+    ).filter(r => r); //Filters the nulls out of the array
+
+    return formattedSkills as string[];
+}
+
+
+
+
+const Form = () => {
+
+    const [formData, setFormData] = useState<FormState>(initValues);
+    const [submitErrors, setSubmitErrors] = useState<FormErrorState>(initErrors);
+
+
+    const selectOptions = options.map((opt,i) =>
+        <option key={i} value={opt.value}>{opt.label}</option>
+    );
+
+    const handleBlur = (e:React.FocusEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        console.log(name, value);
+
+        const validatedFields:FormErrorState = validate();
+        const newErrors = {
+            ...submitErrors,
+            [name]: validatedFields[name as keyof FormErrorState]
+        };
+        console.log("🚀 ~ file: Form.tsx:144 ~ handleBlur ~ newErrors:", newErrors)
+        setSubmitErrors(newErrors);
+
+        // setFormData({
+        //     ...formData,
+        //     touched:{
+        //         ...formData.touched,
+        //         [name]: true
+        //     }
+        // });
+        // this.setState({ touched: { ...this.state.touched, [name]: true } });
+    }
+
+
+    const validate = () => {
+        const errors = {
+            firstName: Validations.name(formData.firstName, true, "First Name"),
+            lastName: Validations.name(formData.lastName, true, "Last Name"),
+            email: Validations.email(formData.email, true),
+            country: Validations.country(formData.country, true),
+            telephone: Validations.telephone(formData.telephone, true),
+            dateOfBirth: Validations.date(formData.dateOfBirth, true),
+            favoriteColor: Validations.text(formData.favoriteColor, true, "Favorite Color"),
+            weight: Validations.weight(formData.weight, true),
+            gender: Validations.gender(formData.gender, true),
+            file: Validations.file(formData.file, true),
+            bio: Validations.text(formData.bio, true, "Bio"),
+            skills: Validations.skills( skillsArrayFormat(formData.skills), true)
+        };
+
+        // return Object.values(errors).filter((value) => value? true : false);
+        return errors;
+
+        // Object to collect error feedback and to display on the form
+        // const errors = {
+        //     firstName: '',
+        //     lastName: '',
+        //     email: '',
+        //     country: '',
+        //     telephone: '',
+        //     dateOfBirth: '',
+        //     favoriteColor: '',
+        //     weight: '0',
+        //     gender: '',
+        //     skills: [],
+        // };
+
+        // if (
+        //     (formData.touched.firstName && formData.firstName.length < 3) ||
+        //     (formData.touched.firstName && formData.firstName.length > 12)
+        //   ) {
+        //     errors.firstName = 'First name must be between 2 and 12';
+        // }
+
+    }
+
+    const handleSelect = ({ target, currentTarget }: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = currentTarget;
+        setFormData({...formData, [name]: value});
+    };
+
+    const handleChange = ({target, currentTarget}: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+        // const { name, value, type, checked } = currentTarget;
+    // const handleChange = ({target, currentTarget}: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
+    // const handleChange = ({target, currentTarget}: React.ChangeEvent<HTMLButtonElement>) => {
+    // const handleChange = ({target, currentTarget}: React.MouseEvent<HTMLButtonElement>) => {
+        const { name, value, type } = currentTarget;
+
+        if (type === "checkbox") {
+            const isChecked = (target as HTMLInputElement).checked;
+            // const isChecked = checked;
+            setFormData(prevState => {
+                return {
+                    ...prevState,
+                    skills:{
+                        ...prevState.skills,
+                        [name]:isChecked
+                    }
+                };
+            });
+        }else if(type === "file"){
+            //todo
+            const files = (target as HTMLInputElement).files;
+            const file = files? files[0] : null;
+
+            // const file = currentTarget.files? currentTarget.files[0] : null;
+            setFormData({...formData, [name]: file});
+        }else{
+            setFormData({...formData, [name]: value});
+        }
+        // console.log(name, value, type);
+    };
+
+    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+        //todo
+        e.preventDefault();
+
+        // const errorsObj = validate();
+        // console.log(errorsObj);
+        // const errorsLength = Object.values(errorsObj).filter((value) => value? true : false);
+
+
+        //We destructure the FormData so we get only the Form values we want. (no touched)
+        const {
+            firstName,
+            lastName,
+            email,
+            country,
+            telephone,
+            dateOfBirth,
+            favoriteColor,
+            weight,
+            gender,
+            file,
+            bio,
+            skills
+        } = formData;
+
+
+
+        console.log("FormData: ", formData);
+
+        const data = {
+            firstName,
+            lastName,
+            email,
+            country,
+            telephone,
+            dateOfBirth,
+            favoriteColor,
+            weight,
+            gender,
+            file,
+            bio,
+            skills: skillsArrayFormat(skills)
+        };
+
+        const newErrors = validate();
+        setSubmitErrors(newErrors)
+
+        console.log("Submit Data: ", data);
+        // console.log("FormData after: ", formData);
+    }
+
+    return <div className="form_container">
+        <h3>Add Student</h3>
+        <form onSubmit={handleSubmit} >
+            <div className="row">
+                <div className="form-group">
+                    <label className="label" htmlFor="firstName">First Name: </label>
+                    <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        placeholder="First Name"
+                        onChange={handleChange}
+                        value={formData.firstName}
+                        onBlur={handleBlur}
+                    />
+                    <br/>
+                    {submitErrors.firstName && <>
+                        <small className="error">{submitErrors.firstName}</small>
+                    </>}
+
+                </div>
+                <div className="form-group">
+                    <label className="label" htmlFor="lastName">Last Name: </label>
+                    <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        placeholder="Last Name"
+                        onChange={handleChange}
+                        value={formData.lastName}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.lastName && <>
+                        <br />
+                        <small className="error">{submitErrors.lastName}</small>
+                    </>}
+
+                </div>
+                <div className="form-group">
+                    <label className="label" htmlFor="email">Email: </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="email@testing.com"
+                        onChange={handleChange}
+                        value={formData.email}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.email && <>
+                        <br />
+                        <small className="error">{submitErrors.email}</small>
+                    </>}
+
+                </div>
+                <div className="form-group">
+                    <label className="label" htmlFor="telephone">Telephone: </label>
+                    <input
+                        type="text"
+                        name="telephone"
+                        id="telephone"
+                        placeholder="0000000"
+                        onChange={handleChange}
+                        value={formData.telephone}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.telephone && <>
+                        <br />
+                        <small className="error">{submitErrors.telephone}</small>
+                    </>}
+
+                </div>
+                <div className="form-group">
+                    <label className="label" htmlFor="dateOfBirth">Date of Birth: </label>
+                    <input
+                        type="date"
+                        name="dateOfBirth"
+                        id="dateOfBirth"
+                        placeholder="01/01/1991"
+                        onChange={handleChange}
+                        value={formData.dateOfBirth}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.dateOfBirth && <>
+                        <br />
+                        <small className="error">{submitErrors.dateOfBirth}</small>
+                    </>}
+
+                </div>
+                <div className="form-group">
+                    <label className="label" htmlFor="favoriteColor">Favorite Color: </label>
+                    <input
+                        type="text"
+                        name="favoriteColor"
+                        id="favoriteColor"
+                        placeholder="Favorite Color"
+                        onChange={handleChange}
+                        value={formData.favoriteColor}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.favoriteColor && <>
+                        <br />
+                        <small className="error">{submitErrors.favoriteColor}</small>
+                    </>}
+
+                </div>
+                <div className="form-group">
+                    <label className="label" htmlFor="weight">Weight: </label>
+                    <input
+                        type="number"
+                        name="weight"
+                        id="weight"
+                        placeholder="Weight in Kg"
+                        onChange={handleChange}
+                        value={formData.weight}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.weight && <>
+                        <br />
+                        <small className="error">{submitErrors.weight}</small>
+                    </>}
+
+                </div>
+
+                <div className="form-group">
+                    <label className="label" htmlFor="country" id="country" >Country: </label>
+                    <select
+                        name="country"
+                        id="country"
+                        onChange={handleSelect}
+                        onBlur={handleBlur}
+                    >
+                        {selectOptions}
+                    </select>
+                    {submitErrors.country && <>
+                        <br />
+                        <small className="error">{submitErrors.country}</small>
+                    </>}
+
+                </div>
+
+                <div className="form-group" >
+                    <p className="label">Gender</p>
+                    <div className="box-group">
+                        <div>
+                            <input
+                                type="radio"
+                                id="female"
+                                name="gender"
+                                value={Gender.Female}
+                                onChange={handleChange}
+                                checked={formData.gender===Gender.Female}
+                            />
+                            <label htmlFor="female">Female</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                id="male"
+                                name="gender"
+                                value={Gender.Male}
+                                onChange={handleChange}
+                                checked={formData.gender===Gender.Male}
+                            />
+                            <label htmlFor="male">Male</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                id="other"
+                                name="gender"
+                                value={Gender.Other}
+                                onChange={handleChange}
+                                checked={formData.gender===Gender.Other}
+                            />
+                            <label htmlFor="other">Other</label>
+                        </div>
+                        {submitErrors.gender && <>
+                            <br />
+                            <small className="error">{submitErrors.gender}</small>
+                        </>}
+
+                    </div>
+                </div>
+
+                <div className="form-group" >
+                    <p className="label">Select your skills</p>
+                    <div className="box-group">
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="html"
+                                name="html"
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="html">HTML</label>
+                        </div>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="css"
+                                name="css"
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="css">CSS</label>
+                        </div>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="javascript"
+                                name="javascript"
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="javascript">JavaScript</label>
+                        </div>
+                        {submitErrors.skills && <>
+                            <br />
+                            <small className="error">{submitErrors.skills}</small>
+                        </>}
+
+                    </div>
+                </div>
+
+                <div className="form-group vertical" >
+                    <label htmlFor="Bio">Bio</label> <br />
+                    <textarea
+                        id="bio"
+                        name="bio"
+                        cols={120}
+                        rows={10}
+                        placeholder="Write about yourself..."
+                        onChange={handleChange}
+                        value={formData.bio}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.bio && <>
+                        <br />
+                        <small className="error">{submitErrors.bio}</small>
+                    </>}
+
+                </div>
+
+                <div className="form-group" >
+                    <label className="label" htmlFor="file"> File: </label>
+                    <input
+                        type="file"
+                        name="file"
+                        id="file"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                    />
+                    {submitErrors.file && <>
+                        <br />
+                        <small className="error">{submitErrors.file}</small>
+                    </>}
+
+                </div>
+
+                <div className="submit_btn">
+                    <button>Submit</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+};
+
+export default Form;
