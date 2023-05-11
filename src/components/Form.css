@@ -4,33 +4,29 @@
     min-width: 800px;
 }
 
-/* .App_form .form_body{
-    border: 1px solid red;
-} */
-
 .form_container .row{
     border: 1px dashed black;
     width: 100%;
     position: relative;
-    /* left: 50%; */
-    /* width: 50%; */
 }
 .form_container .form-group{
-    /* border: 1px dotted blue; */
     padding: 10px;
     margin: 4px 0;
     text-align: left;
-    /* position: relative; */
-    display: flex;
-    justify-content: space-between;
+    /* display: flex;
+    justify-content: space-between; */
     width: 60%;
 }
 
-.form-group.vertical{
-    display: flex;
-    /* align-items: center; */
-    flex-direction: column;
+.error{
+    color: red;
+    white-space: pre;
 }
+
+/* .form-group.vertical{
+    display: flex;
+    flex-direction: column;
+} */
 
 .form_container .box-group{
     /* background-color: red; */
@@ -39,8 +35,9 @@
 
 .form-group .label{
     /* text-align: left;  */
-    padding: 12px 20px;
-    margin: 8px 0;
+    /* padding: 12px 20px; */
+    margin: 4px 0;
+    display: block;
 }
 
 input[type=text],
