@@ -27,20 +27,6 @@ const options = [
     },
 ];
 
-// interface FormErrorState  {
-//     firstName: null|string,
-//     lastName: null|string,
-//     email: null|string,
-//     country: null|string,
-//     telephone: null|string,
-//     dateOfBirth: null|string,
-//     favoriteColor: null|string,
-//     weight: null|string,
-//     gender: null|string,
-//     file: null|string,
-//     bio: null|string,
-//     skills: null|string
-// }
 type FormErrorState = Record<keyof FormState, (null|string)>;
 
 interface FormState  {
@@ -56,10 +42,6 @@ interface FormState  {
     file: File|null,
     bio: string,
     skills: StudentSkills,
-    // touched: {
-    //     firstName: boolean,
-    //     lastName: boolean
-    // }
 }
 
 const initValues:FormState = {
@@ -79,10 +61,6 @@ const initValues:FormState = {
         css: false,
         javascript: false,
     },
-    // touched: {
-    //     firstName: false,
-    //     lastName: false,
-    // }
 };
 
 const initErrors:FormErrorState = {
@@ -101,14 +79,6 @@ const initErrors:FormErrorState = {
 }
 
 const skillsArrayFormat = (SkillsObj:StudentSkills) => {
-    // const tempSkills = {...SkillsObj};
-    // const formattedSkills = [];
-    // for (const key in tempSkills) {
-    //     console.log(key);
-    //     if (tempSkills[key as keyof StudentSkills]) {
-    //         formattedSkills.push(key.toUpperCase())
-    //     }
-    // }
 
     const formattedSkills = Object.entries(SkillsObj).map(([key,value]) =>
         value? key.toUpperCase() : null
@@ -141,15 +111,6 @@ const Form = () => {
         };
         console.log("🚀 ~ file: Form.tsx:144 ~ handleBlur ~ newErrors:", newErrors)
         setSubmitErrors(newErrors);
-
-        // setFormData({
-        //     ...formData,
-        //     touched:{
-        //         ...formData.touched,
-        //         [name]: true
-        //     }
-        // });
-        // this.setState({ touched: { ...this.state.touched, [name]: true } });
     }
 
 
@@ -169,30 +130,7 @@ const Form = () => {
             skills: Validations.skills( skillsArrayFormat(formData.skills), true)
         };
 
-        // return Object.values(errors).filter((value) => value? true : false);
         return errors;
-
-        // Object to collect error feedback and to display on the form
-        // const errors = {
-        //     firstName: '',
-        //     lastName: '',
-        //     email: '',
-        //     country: '',
-        //     telephone: '',
-        //     dateOfBirth: '',
-        //     favoriteColor: '',
-        //     weight: '0',
-        //     gender: '',
-        //     skills: [],
-        // };
-
-        // if (
-        //     (formData.touched.firstName && formData.firstName.length < 3) ||
-        //     (formData.touched.firstName && formData.firstName.length > 12)
-        //   ) {
-        //     errors.firstName = 'First name must be between 2 and 12';
-        // }
-
     }
 
     const handleSelect = ({ target, currentTarget }: React.ChangeEvent<HTMLSelectElement>) => {
@@ -201,15 +139,10 @@ const Form = () => {
     };
 
     const handleChange = ({target, currentTarget}: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
-        // const { name, value, type, checked } = currentTarget;
-    // const handleChange = ({target, currentTarget}: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
-    // const handleChange = ({target, currentTarget}: React.ChangeEvent<HTMLButtonElement>) => {
-    // const handleChange = ({target, currentTarget}: React.MouseEvent<HTMLButtonElement>) => {
         const { name, value, type } = currentTarget;
 
         if (type === "checkbox") {
             const isChecked = (target as HTMLInputElement).checked;
-            // const isChecked = checked;
             setFormData(prevState => {
                 return {
                     ...prevState,
@@ -220,27 +153,16 @@ const Form = () => {
                 };
             });
         }else if(type === "file"){
-            //todo
             const files = (target as HTMLInputElement).files;
             const file = files? files[0] : null;
-
-            // const file = currentTarget.files? currentTarget.files[0] : null;
             setFormData({...formData, [name]: file});
         }else{
             setFormData({...formData, [name]: value});
         }
-        // console.log(name, value, type);
     };
 
     const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
-        //todo
         e.preventDefault();
-
-        // const errorsObj = validate();
-        // console.log(errorsObj);
-        // const errorsLength = Object.values(errorsObj).filter((value) => value? true : false);
-
-
         //We destructure the FormData so we get only the Form values we want. (no touched)
         const {
             firstName,
@@ -278,9 +200,6 @@ const Form = () => {
 
         const newErrors = validate();
         setSubmitErrors(newErrors)
-
-        console.log("Submit Data: ", data);
-        // console.log("FormData after: ", formData);
     }
 
     return <div className="form_container">
