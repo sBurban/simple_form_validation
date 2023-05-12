@@ -76,80 +76,80 @@ const FormReducer = (state:FormState, action:Action):FormState => {
     return state;
 }
 
-export type FormTypes2 = "SET_FIRSTNAME"|
-"SET_LASTNAME"|
-"SET_EMAIL"|
-"SET_COUNTRY"|
-"SET_TELEPHONE"|
-"SET_DATEOFBIRTH"|
-"SET_FAVORITECOLOR"|
-"SET_WEIGHT"|
-"SET_GENDER"|
-"SET_FILE"|
-"SET_BIO"|
-"SET_SKILLS"
+// export type FormTypes2 = "SET_FIRSTNAME"|
+// "SET_LASTNAME"|
+// "SET_EMAIL"|
+// "SET_COUNTRY"|
+// "SET_TELEPHONE"|
+// "SET_DATEOFBIRTH"|
+// "SET_FAVORITECOLOR"|
+// "SET_WEIGHT"|
+// "SET_GENDER"|
+// "SET_FILE"|
+// "SET_BIO"|
+// "SET_SKILLS"
 
-type Action2 =
- | { type: "SET_FIRSTNAME"|"SET_LASTNAME"|"SET_EMAIL"|"SET_COUNTRY"
-    |"SET_TELEPHONE"|"SET_DATEOFBIRTH"|"SET_FAVORITECOLOR"|"SET_WEIGHT"|"SET_BIO",
-    val:string
-}
-| { type: "SET_GENDER", val:Gender }
-| { type: "SET_FILE", val: File|null }
-| { type: "SET_SKILLS", val: boolean, name:string, }
-// | { type: Omit<FormTypes2, "SET_GENDER"|"SET_FILE"|"SET_SKILLS">, val:string }
+// type Action2 =
+//  | { type: "SET_FIRSTNAME"|"SET_LASTNAME"|"SET_EMAIL"|"SET_COUNTRY"
+//     |"SET_TELEPHONE"|"SET_DATEOFBIRTH"|"SET_FAVORITECOLOR"|"SET_WEIGHT"|"SET_BIO",
+//     val:string
+// }
+// | { type: "SET_GENDER", val:Gender }
+// | { type: "SET_FILE", val: File|null }
+// | { type: "SET_SKILLS", val: boolean, name:string, }
+// // | { type: Omit<FormTypes2, "SET_GENDER"|"SET_FILE"|"SET_SKILLS">, val:string }
 
 
 
-const FormReducer2 = (state:FormState, action:Action2):FormState => {
-    if(action.type=="SET_FIRSTNAME"){
+// const FormReducer2 = (state:FormState, action:Action2):FormState => {
+//     if(action.type=="SET_FIRSTNAME"){
 
-        return {...state, firstName: action.val};
-    }
-    if(action.type=="SET_LASTNAME"){
+//         return {...state, firstName: action.val};
+//     }
+//     if(action.type=="SET_LASTNAME"){
 
-        return {...state, lastName: action.val};
-    }
-    if(action.type=="SET_EMAIL"){
+//         return {...state, lastName: action.val};
+//     }
+//     if(action.type=="SET_EMAIL"){
 
-        return {...state, email: action.val};
-    }
-    if(action.type=="SET_COUNTRY"){
+//         return {...state, email: action.val};
+//     }
+//     if(action.type=="SET_COUNTRY"){
 
-        return {...state, country: action.val};
-    }
-    if(action.type=="SET_TELEPHONE"){
+//         return {...state, country: action.val};
+//     }
+//     if(action.type=="SET_TELEPHONE"){
 
-        return {...state, telephone: action.val};
-    }
-    if(action.type=="SET_DATEOFBIRTH"){
+//         return {...state, telephone: action.val};
+//     }
+//     if(action.type=="SET_DATEOFBIRTH"){
 
-        return {...state, dateOfBirth: action.val};
-    }
-    if(action.type=="SET_FAVORITECOLOR"){
+//         return {...state, dateOfBirth: action.val};
+//     }
+//     if(action.type=="SET_FAVORITECOLOR"){
 
-        return {...state, favoriteColor: action.val};
-    }
-    if(action.type=="SET_WEIGHT"){
+//         return {...state, favoriteColor: action.val};
+//     }
+//     if(action.type=="SET_WEIGHT"){
 
-        return {...state, weight: action.val};
-    }
-    if(action.type=="SET_GENDER"){
+//         return {...state, weight: action.val};
+//     }
+//     if(action.type=="SET_GENDER"){
 
-        return {...state, gender: action.val};
-    }
-    if(action.type=="SET_FILE"){
-        return {...state, file: action.val};
-    }
-    if(action.type=="SET_BIO"){
-        return {...state, bio: action.val};
-    }
-    if(action.type=="SET_SKILLS"){
-        const newSkills = {...state.skills, [action.name]:action.val };
-        return {...state, skills: newSkills};
-    }
+//         return {...state, gender: action.val};
+//     }
+//     if(action.type=="SET_FILE"){
+//         return {...state, file: action.val};
+//     }
+//     if(action.type=="SET_BIO"){
+//         return {...state, bio: action.val};
+//     }
+//     if(action.type=="SET_SKILLS"){
+//         const newSkills = {...state.skills, [action.name]:action.val };
+//         return {...state, skills: newSkills};
+//     }
 
-    return state;
-}
+//     return state;
+// }
 
 export default FormReducer;

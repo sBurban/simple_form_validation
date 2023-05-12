@@ -167,7 +167,7 @@ const Form = () => {
             // dispatchFormData({type: FormTypes[typeKey], val: value});
 
             // dispatchFormData({type: typeName, val: value});
-            console.log(name);
+            // console.log(name);
 
             if(name==="firstName") dispatchFormData({type:FormTypes.FIRSTNAME, val: value});
             if(name==="lastName") dispatchFormData({type:FormTypes.LASTNAME, val: value});
@@ -203,7 +203,7 @@ const Form = () => {
 
 
 
-        console.log("FormData: ", formData);
+        // console.log("FormData: ", formData);
 
         const data = {
             firstName,
