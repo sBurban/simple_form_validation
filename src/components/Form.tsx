@@ -1,8 +1,11 @@
 
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import './Form.css';
 import { Gender, StudentSkills } from "../common/Types";
 import { Validations } from '../utils/Validations';
+import FormReducer from "./Form.reducer";
+import { FormTypes,FormTypes2 } from "./Form.reducer";
+import { FormState,FormErrorState } from "../common/Types";
 
 const options = [
     {
@@ -27,22 +30,7 @@ const options = [
     },
 ];
 
-type FormErrorState = Record<keyof FormState, (null|string)>;
-
-interface FormState  {
-    firstName: string,
-    lastName: string,
-    email: string,
-    country: string,
-    telephone: string,
-    dateOfBirth: string,
-    favoriteColor: string,
-    weight: number|string,
-    gender: Gender,
-    file: File|null,
-    bio: string,
-    skills: StudentSkills,
-}
+// const EMPTY_FILE = Object.freeze(new File([""], "filename"));
 
 const initValues:FormState = {
     firstName: '',
@@ -88,12 +76,13 @@ const skillsArrayFormat = (SkillsObj:StudentSkills) => {
 }
 
 
-
-
 const Form = () => {
 
-    const [formData, setFormData] = useState<FormState>(initValues);
+    // const [formData, setFormData] = useState<FormState>(initValues);
     const [submitErrors, setSubmitErrors] = useState<FormErrorState>(initErrors);
+
+
+    const [formData, dispatchFormData] = useReducer(FormReducer, initValues);
 
 
     const selectOptions = options.map((opt,i) =>
@@ -102,14 +91,14 @@ const Form = () => {
 
     const handleBlur = (e:React.FocusEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        console.log(name, value);
+        // console.log(name, value);
 
         const validatedFields:FormErrorState = validate();
         const newErrors = {
             ...submitErrors,
             [name]: validatedFields[name as keyof FormErrorState]
         };
-        console.log("🚀 ~ file: Form.tsx:144 ~ handleBlur ~ newErrors:", newErrors)
+        // console.log("🚀 ~ file: Form.tsx:144 ~ handleBlur ~ newErrors:", newErrors)
         setSubmitErrors(newErrors);
     }
 
@@ -135,29 +124,62 @@ const Form = () => {
 
     const handleSelect = ({ target, currentTarget }: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = currentTarget;
-        setFormData({...formData, [name]: value});
+        // setFormData({...formData, [name]: value});
+
+        dispatchFormData({type:FormTypes.COUNTRY, val: value});
     };
 
     const handleChange = ({target, currentTarget}: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
         const { name, value, type } = currentTarget;
 
+        // const typeName = "SET_"+name.toUpperCase();
+        // const typeName = "SET_"+name.toUpperCase() as FormTypes2;
+        // const typeName:keyof typeof FormTypes = "SET_"+name.toUpperCase();
+        const typeName = "SET_"+name.toUpperCase() as unknown as FormTypes;
+        // FormTypes[typeName];
+
         if (type === "checkbox") {
+            // Skills
             const isChecked = (target as HTMLInputElement).checked;
-            setFormData(prevState => {
-                return {
-                    ...prevState,
-                    skills:{
-                        ...prevState.skills,
-                        [name]:isChecked
-                    }
-                };
-            });
+            // setFormData(prevState => {
+            //     return {
+            //         ...prevState,
+            //         skills:{
+            //             ...prevState.skills,
+            //             [name]:isChecked
+            //         }
+            //     };
+            // });
+
+            // const newSkills = {...formData.skills, [name]:isChecked};
+            dispatchFormData({type:FormTypes.SKILLS, val: isChecked, name })
         }else if(type === "file"){
             const files = (target as HTMLInputElement).files;
             const file = files? files[0] : null;
-            setFormData({...formData, [name]: file});
+            // setFormData({...formData, [name]: file});
+
+            dispatchFormData({type:FormTypes.FILE, val: file})
         }else{
-            setFormData({...formData, [name]: value});
+            // setFormData({...formData, [name]: value});
+
+            // const index:number = Object.values(FormTypes).indexOf(typeName);
+            // const typeKey = Object.keys(FormTypes)[index];
+            // dispatchFormData({type: FormTypes[typeKey], val: value});
+
+            // dispatchFormData({type: typeName, val: value});
+            console.log(name);
+
+            if(name==="firstName") dispatchFormData({type:FormTypes.FIRSTNAME, val: value});
+            if(name==="lastName") dispatchFormData({type:FormTypes.LASTNAME, val: value});
+            if(name==="email") dispatchFormData({type:FormTypes.EMAIL, val: value});
+            if(name==="country") dispatchFormData({type:FormTypes.COUNTRY, val: value});
+            if(name==="telephone") dispatchFormData({type:FormTypes.TELEPHONE, val: value});
+            if(name==="dateOfBirth") dispatchFormData({type:FormTypes.DATEOFBIRTH, val: value});
+            if(name==="favoriteColor") dispatchFormData({type:FormTypes.FAVORITECOLOR, val: value});
+            if(name==="weight") dispatchFormData({type:FormTypes.WEIGHT, val: value});
+            if(name==="gender") dispatchFormData({type:FormTypes.GENDER, val: value});
+            if(name==="bio") dispatchFormData({type:FormTypes.BIO, val: value});
+
         }
     };
 
