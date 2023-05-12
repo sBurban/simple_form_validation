@@ -177,7 +177,7 @@ const Form = () => {
             if(name==="dateOfBirth") dispatchFormData({type:FormTypes.DATEOFBIRTH, val: value});
             if(name==="favoriteColor") dispatchFormData({type:FormTypes.FAVORITECOLOR, val: value});
             if(name==="weight") dispatchFormData({type:FormTypes.WEIGHT, val: value});
-            if(name==="gender") dispatchFormData({type:FormTypes.GENDER, val: value});
+            if(name==="gender") dispatchFormData({type:FormTypes.GENDER, val: value as Gender});
             if(name==="bio") dispatchFormData({type:FormTypes.BIO, val: value});
 
         }

@@ -9,7 +9,6 @@ export type StudentSkills = {
     css: boolean,
     javascript: boolean
 }
-
 export interface FormState  {
     firstName: string,
     lastName: string,
